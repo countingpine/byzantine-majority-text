@@ -265,6 +265,23 @@ def convert_beta_to_unicode(beta):
     return unicode_result
 
 
+def convert_unquoted_beta_to_unicode(beta):
+    """
+    Converts the standardised beta code to Unicode, leaving "quoted" sections in English
+
+    The function also removes the quotes.
+    """
+
+    result = ""
+    for i, segment in enumerate(beta.split('"')):
+        if i % 2 == 0:
+            result += convert_beta_to_unicode(segment)
+        else:
+            result += segment
+
+    return result
+
+
 def convert_book(path, drop_variants, book):
     """
     Converts an individual book into Unicode.
@@ -278,7 +295,7 @@ def convert_book(path, drop_variants, book):
     for line in lines:
         chap, verse, clean_line = extract_verse_chapter(line)
         beta_line = standardise_beta_code(clean_line, drop_variants)
-        unicode_line = convert_beta_to_unicode(beta_line)
+        unicode_line = convert_unquoted_beta_to_unicode(beta_line)
         result.append([chap, verse, unicode_line])
         # print("     ",chap, verse, beta_line, unicode_line)
 
